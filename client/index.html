@@ -1,0 +1,143 @@
+<html ng-app="customers_app">
+<head>
+  <title>Customers and Orders</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <!-- require angular -->
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular-route.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0/angular-messages.js"></script>
+  <script type='text/javascript'>
+//  inject the ngRoute dependency in the module.
+    var customers_app = angular.module('customers_app', ['ngRoute']);
+    //  use the config method to set up routing:
+    customers_app.config(function ($routeProvider) {
+      $routeProvider
+        .when('/customers',{
+            templateUrl: 'partials/customers.html'
+        })
+        .when('/orders',{
+            templateUrl: 'partials/orders.html'
+        })
+        .otherwise({
+          redirectTo: '/'
+        });
+    });
+</script>
+  <script type='text/javascript'>
+  
+		customers_app.factory('CustomerFactory', function($http) {
+			var factory = {};
+			var customers = [];
+			//Restful syntax: index = get all that object
+			factory.index = function(callback) {
+				$http.get('/customers').success(function(output){
+					customers = output;
+					callback(customers);
+				});
+			}
+			// note the use of callbacks!
+			// Restful syntax: create = add one to that object
+			factory.create = function(info) {
+				$http.post('/addCustomer', info).success(function(){	
+					console.log('user added');
+				});
+		
+			}
+			factory.delete= function(name) {
+				console.log("info is", name)
+				$http.post('/deleteCustomer', {name:name}).success(function(output){
+					console.log('done');
+
+				})
+					
+			}
+			return factory;
+		});
+		//second "order factory" he he
+		customers_app.factory('OrderFactory', function($http) {
+			var factory = {};
+			var orders = [];
+			//Restful syntax: index = get all that object
+			factory.index = function(callback) {
+				$http.get('/orders').success(function(output){
+					orders = output;
+					callback(orders);
+				});
+			}
+			// note the use of callbacks!
+			// Restful syntax: create = add one to that object
+			factory.create = function(info) {
+				console.log("info is", info)
+				$http.post('/addOrder', info).success(function(output){
+					console.log("info _info is", info)
+					orders = output;
+					// friends.push({name: info.name, age:info.age});
+					console.log('done');
+
+				})
+			}
+			factory.delete= function(name) {
+				console.log("info is", name)
+				$http.post('/deleteOrder', {name:name}).success(function(output){
+					console.log('done');
+				})					
+				}
+				return factory;
+				});
+
+	 
+		customers_app.controller('customersController', function($scope, CustomerFactory){
+		  	$scope.message = 'We are using customers controller';
+		  	
+		  	//getter method
+		  	CustomerFactory.index(function(data){
+		  		$scope.customers = data;
+		  	});
+
+		  	$scope.addcustomer = function(data){
+		  		console.log("fist console:", $scope.new_customer);
+		  		CustomerFactory.create($scope.new_customer);
+		  		CustomerFactory.index(function(data){
+			  		$scope.customers = data;
+			  	});
+		  			$scope.new_customer={};
+		  		}
+		  	$scope.deletecustomer = function(name){
+		  		CustomerFactory.delete(name);
+		  		CustomerFactory.index(function(data){
+			  		$scope.customers = data;
+			  	});
+		  		}		
+
+		  })
+
+		customers_app.controller('ordersController', function($scope, CustomerFactory, OrderFactory){
+		  	$scope.message = 'We are using orders controller';
+		  	CustomerFactory.index(function(data){
+		  		$scope.customers = data;
+		  	});
+		  	OrderFactory.index(function(data){
+		  		$scope.orders = data;
+		  	});
+
+		  	$scope.placeorder = function(){
+		  		console.log("this would be order", $scope.order)
+		  		OrderFactory.create($scope.order);
+		  		$scope.order={};
+		  		}
+		  	$scope.deleteorder = function(name){
+		  		OrderFactory.delete(name);
+		  		}		
+
+		  })
+  </script>
+</head>
+  <body>
+    <div ng-app='customers_app'>
+        <a href="#/customers">Customers</a> | <a href="#/orders">Orders</a>
+        <div ng-view="">
+        </div>
+    </div>
+  </body>
+</html>

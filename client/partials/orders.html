@@ -1,0 +1,66 @@
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+</head>
+<body>
+<div ng-controller='ordersController'>
+<h4>{{message}}</h4>
+	<form>
+       		Customer: <select  ng-model="order.customer">
+       			<option ng-repeat = "customer in customers">{{customer.name}}</option>
+       		</select><br><br>
+       		Order: <select  ng-model="order.qty">
+       			<option >1</option>
+       			<option >2</option>
+       			<option >3</option>
+       			<option >4</option>
+       			<option >5</option>
+       		</select>
+       		<select  ng-model="order.product">
+       			<option >Nike shoes</option>
+       			<option >Prada glasses</option>
+       			<option >Roche watch</option>
+       			<option >Swiss cuckkoo</option>
+       			<option >Movenpick icecream</option>
+       		</select>
+       		<input type="submit" value="Order" ng-click="placeorder()">
+
+       </form>
+    <div class="row">
+
+    <div id="table1" class="row">
+    
+      <div class="col-md-10 col-md-offset-1" class="active">
+        <table class="table table-bordered table-striped">          
+          <thead>
+            <tr>
+              <td>Name</td>
+              <td>Product</td>
+              <td>Quantity</td>
+              <td>Created at</td>
+              <td>Actions</td>
+            </tr>
+          </thead>
+          <tbody>           
+              <tr ng-repeat = "order in orders">
+                <ul>
+                  <td >{{order.name}}</td> 
+                  <td >{{order.product}}</td>
+                  <td >{{order.qty}}</td> 
+                  <td >{{order.createdAt}}</td>
+                  <td>
+                    <form>
+                      <input type="submit" value="Remove" ng-click="deleteorder(order.name)">
+                    </form>
+                  </td>
+                </ul>
+                
+              </tr> 
+          </tbody>
+        </table>
+      </div>
+  </div>
+</div>
+</body>
+</html>
