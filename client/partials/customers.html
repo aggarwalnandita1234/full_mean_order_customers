@@ -30,7 +30,7 @@
               <tr ng-repeat = "customer in customers">
                 <ul>
                   <td >{{customer.name}}</td> 
-                  <td >{{customer.createdAt}}</td> 
+                  <td ng-bind="customer.created_at | date: 'MMMM, dd, yyyy '"></td> 
                   <td>
                     <form>
                       <input type="submit" value="Remove" ng-click="deletecustomer(customer.name)">

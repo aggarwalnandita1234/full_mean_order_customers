@@ -29,18 +29,19 @@
 		customers_app.factory('CustomerFactory', function($http) {
 			var factory = {};
 			var customers = [];
-			//Restful syntax: index = get all that object
+
 			factory.index = function(callback) {
 				$http.get('/customers').success(function(output){
 					customers = output;
 					callback(customers);
 				});
 			}
-			// note the use of callbacks!
-			// Restful syntax: create = add one to that object
+
 			factory.create = function(info) {
-				$http.post('/addCustomer', info).success(function(){	
-					console.log('user added');
+				$http.post('/addCustomer', info).success(function(){
+
+					console.log('user added with data');
+				
 				});
 		
 			}
@@ -58,15 +59,14 @@
 		customers_app.factory('OrderFactory', function($http) {
 			var factory = {};
 			var orders = [];
-			//Restful syntax: index = get all that object
+
 			factory.index = function(callback) {
 				$http.get('/orders').success(function(output){
 					orders = output;
 					callback(orders);
 				});
 			}
-			// note the use of callbacks!
-			// Restful syntax: create = add one to that object
+
 			factory.create = function(info) {
 				console.log("info is", info)
 				$http.post('/addOrder', info).success(function(output){
@@ -93,16 +93,19 @@
 		  	//getter method
 		  	CustomerFactory.index(function(data){
 		  		$scope.customers = data;
+		  		console.log("first console:", $scope.customers);
 		  	});
 
-		  	$scope.addcustomer = function(data){
-		  		console.log("fist console:", $scope.new_customer);
-		  		CustomerFactory.create($scope.new_customer);
-		  		CustomerFactory.index(function(data){
-			  		$scope.customers = data;
-			  	});
-		  			$scope.new_customer={};
+		  	$scope.addcustomer = function(){
+		  		console.log("customer_add is", $scope.new_customer)
+		  		CustomerFactory.create($scope.new_customer)
+		  		CustomerFactory.index(function(data){	
+		  		$scope.customers = data;
+		  		
+		})
+	  			$scope.new_customer={};
 		  		}
+
 		  	$scope.deletecustomer = function(name){
 		  		CustomerFactory.delete(name);
 		  		CustomerFactory.index(function(data){
